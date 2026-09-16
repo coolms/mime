@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  # Weekly, so a break from a dependency or a PHP point release shows up on a
+  # Monday rather than inside someone's pull request.
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # 8.5 is the floor. Add newer versions as they ship.
+        php: ['8.5']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - run: composer install --no-interaction --no-progress
+
+      - name: Package suite
+        run: vendor/bin/phpunit --testsuite mime
+
+      - name: Differential oracle
+        run: vendor/bin/phpunit --testsuite oracle
+
+      - name: Divergence report
+        if: always()
+        run: cat build/oracle-report.md || echo "no divergences recorded"
+
+  no-dev:
+    # The claim that matters to a consumer: installing this parser does not install
+    # the oracle, its DI container, or its PSR-7 implementation. Two unit tests
+    # check that nothing in src/ names the oracle and that the manifest keeps it in
+    # require-dev; only a real install can check what actually lands in vendor.
+    name: Installs clean without dev dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+
+      - run: composer install --no-interaction --no-progress --no-dev
+
+      - name: Nothing from the oracle may be in vendor
+        run: |
+          for forbidden in zbateson php-di guzzlehttp psr; do
+            if [ -d "vendor/$forbidden" ]; then
+              echo "vendor/$forbidden was installed by a --no-dev install"
+              exit 1
+            fi
+          done
+          echo "vendor holds only the autoloader, as it should"
+
+      - name: And the parser still works with nothing installed
+        run: |
+          php -r '
+            require "vendor/autoload.php";
+            $m = new CoolMS\Mime\MessageParser()->parse("Subject: x\r\nContent-Type: text/plain\r\n\r\nbody\r\n");
+            if ("body\r\n" !== $m->root->content()) { echo "parse failed\n"; exit(1); }
+            echo "parsed with no dependencies\n";
+          '
