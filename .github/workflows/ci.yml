@@ -43,6 +43,17 @@ jobs:
         if: always()
         run: cat build/oracle-report.md || echo "no divergences recorded"
 
+      - name: Conformance matrix is current
+        # The matrix is generated, and it is COMMITTED because it is the package's
+        # published claim. Regenerating it here and refusing a diff is what keeps the
+        # committed file a report of a run rather than a document somebody edited.
+        run: |
+          composer matrix
+          git diff --exit-code -- CONFORMANCE.md || {
+            echo "CONFORMANCE.md is out of date. Run: composer matrix"
+            exit 1
+          }
+
   no-dev:
     # The claim that matters to a consumer: installing this parser does not install
     # the oracle, its DI container, or its PSR-7 implementation. Two unit tests

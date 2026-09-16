@@ -7,6 +7,7 @@ namespace CoolMS\Mime\Tests\Unit\Header;
 use CoolMS\Mime\Header\HeaderScanResult;
 use CoolMS\Mime\Header\HeaderScanner;
 use CoolMS\Mime\Io\Source;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -20,6 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class HeaderScannerTest extends TestCase
 {
+    #[Conformance('rfc5322-header-fields')]
     #[Test]
     public function itReadsFieldsAndSaysWhereTheBodyBegins(): void
     {
@@ -38,6 +40,7 @@ final class HeaderScannerTest extends TestCase
      * two halves without it would turn "long subject" into "longsubject", which is
      * the classic way a folded header is silently corrupted.
      */
+    #[Conformance('rfc5322-folding')]
     #[Test]
     public function aFoldedFieldIsUnfoldedWithTheWhitespaceKept(): void
     {
@@ -46,6 +49,7 @@ final class HeaderScannerTest extends TestCase
         self::assertSame('a very long subject and more', $result->headers->value('subject'));
     }
 
+    #[Conformance('rfc5322-duplicate-fields')]
     #[Test]
     public function repeatedFieldsAreAllKeptAndTheFirstAnswersASingularRead(): void
     {
@@ -66,6 +70,7 @@ final class HeaderScannerTest extends TestCase
         self::assertTrue($result->isWellFormed(), 'ending at EOF is not malformity, it is just short');
     }
 
+    #[Conformance('rfc5322-malformed-lines')]
     #[Test]
     public function aLineWithNoColonIsCountedRatherThanInvented(): void
     {
@@ -78,6 +83,7 @@ final class HeaderScannerTest extends TestCase
     }
 
     /** A continuation before any field has nothing to continue. */
+    #[Conformance('rfc5322-malformed-lines')]
     #[Test]
     public function aContinuationWithNothingToContinueIsCounted(): void
     {
@@ -93,6 +99,7 @@ final class HeaderScannerTest extends TestCase
      * on intact -- deciding what they mean is the charset layer's problem, and
      * dropping them here would destroy the evidence.
      */
+    #[Conformance('rfc6532-utf8-headers')]
     #[Test]
     public function eightBitBytesInAHeaderArePassedThroughIntact(): void
     {

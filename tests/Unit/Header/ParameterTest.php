@@ -7,6 +7,7 @@ namespace CoolMS\Mime\Tests\Unit\Header;
 use CoolMS\Mime\ContentDisposition;
 use CoolMS\Mime\ContentType;
 use CoolMS\Mime\Header\ParameterScanner;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -20,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 final class ParameterTest extends TestCase
 {
     /** A semicolon inside a quoted value is not a separator. */
+    #[Conformance('rfc2045-content-type')]
     #[Test]
     public function aQuotedValueMayContainTheSeparator(): void
     {
@@ -30,6 +32,7 @@ final class ParameterTest extends TestCase
         self::assertSame('utf-8', $type->charset());
     }
 
+    #[Conformance('rfc2183-filename')]
     #[Test]
     public function escapedQuotesInsideAValueSurvive(): void
     {
@@ -58,6 +61,7 @@ final class ParameterTest extends TestCase
 
     // -- RFC 2231 -------------------------------------------------------------
 
+    #[Conformance('rfc2231-continuation')]
     #[Test]
     public function aContinuationIsConcatenatedByIndex(): void
     {
@@ -72,6 +76,7 @@ final class ParameterTest extends TestCase
      * Segments arriving out of order. Concatenating as they arrive produces a name
      * with its halves swapped, which is worse than failing because it looks plausible.
      */
+    #[Conformance('rfc2231-out-of-order')]
     #[Test]
     public function segmentsAreSortedByIndexNotByArrival(): void
     {
@@ -82,6 +87,7 @@ final class ParameterTest extends TestCase
         self::assertSame('first-second.txt', $disposition->filename());
     }
 
+    #[Conformance('rfc2231-extended-value')]
     #[Test]
     public function anExtendedValueCarriesItsOwnCharset(): void
     {
@@ -92,6 +98,7 @@ final class ParameterTest extends TestCase
         self::assertSame('über.txt', $disposition->filename());
     }
 
+    #[Conformance('rfc2231-extended-value')]
     #[Test]
     public function aContinuationOfExtendedSegmentsTakesTheCharsetFromSegmentZero(): void
     {
@@ -118,6 +125,7 @@ final class ParameterTest extends TestCase
      * parameter. Refusing to decode it shows a person `=?utf-8?B?...?=` as the name
      * of their attachment.
      */
+    #[Conformance('rfc2047-in-parameters')]
     #[Test]
     public function anEncodedWordInAPlainFilenameIsDecodedAnyway(): void
     {
@@ -150,6 +158,7 @@ final class ParameterTest extends TestCase
 
     // -- content type defaults ------------------------------------------------
 
+    #[Conformance('rfc2045-default-type')]
     #[Test]
     public function aContentTypeWithNoSlashFallsBackToTheDefault(): void
     {
@@ -159,6 +168,7 @@ final class ParameterTest extends TestCase
         self::assertSame('utf-8', $type->charset(), 'and the parameters are still read');
     }
 
+    #[Conformance('rfc6532-message-global')]
     #[Test]
     public function messageGlobalIsAnEmbeddedMessageJustAsRfc822Is(): void
     {

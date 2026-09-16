@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoolMS\Mime\Tests\Unit\Io;
 
 use CoolMS\Mime\Io\Source;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -38,6 +39,7 @@ final class LineReaderTest extends TestCase
      * "\n" produces, and the terminator LENGTH is what the body-range arithmetic
      * subtracts, so getting it wrong shifts every part by a byte.
      */
+    #[Conformance('line-endings')]
     #[Test]
     public function itObservesTheLineEndingRatherThanAssumingCrlf(): void
     {
@@ -86,6 +88,7 @@ final class LineReaderTest extends TestCase
         self::assertSame('b', $reader->text());
     }
 
+    #[Conformance('non-seekable-source')]
     #[Test]
     public function aNonSeekableStreamIsBufferedRatherThanRefused(): void
     {

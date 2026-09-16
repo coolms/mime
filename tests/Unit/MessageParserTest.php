@@ -6,6 +6,7 @@ namespace CoolMS\Mime\Tests\Unit;
 
 use CoolMS\Mime\Message;
 use CoolMS\Mime\MessageParser;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +27,8 @@ final class MessageParserTest extends TestCase
     private MessageParser $parser;
 
     /** RFC 2045 section 5.2: no Content-Type at all means text/plain, not nothing. */
+    #[Conformance('rfc2045-default-type')]
+    #[Conformance('rfc2045-identity-encodings')]
     #[Test]
     public function aBareRfc822MessageIsOneTextPart(): void
     {
@@ -43,6 +46,8 @@ final class MessageParserTest extends TestCase
         self::assertSame('plain', $message->subject());
     }
 
+    #[Conformance('rfc2046-boundaries')]
+    #[Conformance('rfc2046-preamble-epilogue')]
     #[Test]
     public function aMultipartSplitsIntoItsParts(): void
     {
@@ -76,6 +81,7 @@ final class MessageParserTest extends TestCase
      * delimiter, not to the body above it. One or two bytes, and getting it wrong
      * corrupts every base64 attachment in the message.
      */
+    #[Conformance('rfc2046-delimiter-owns-the-break')]
     #[Test]
     public function theBreakBeforeADelimiterIsNotPartOfTheBodyAboveIt(): void
     {
@@ -92,6 +98,9 @@ final class MessageParserTest extends TestCase
         self::assertSame('exactly this', $message->root->parts()[0]->content(), 'no trailing CRLF');
     }
 
+    #[Conformance('rfc2046-nested-multipart')]
+    #[Conformance('rfc2183-disposition')]
+    #[Conformance('rfc2183-filename')]
     #[Test]
     public function nestedMultipartsAreWalkedToTheirOwnDepth(): void
     {
@@ -132,6 +141,7 @@ final class MessageParserTest extends TestCase
      * A line that merely BEGINS with the boundary is not a delimiter. `--frontierX`
      * is a different boundary, and treating it as one splits a part in half.
      */
+    #[Conformance('rfc2046-boundaries')]
     #[Test]
     public function aLineThatMerelyStartsWithTheBoundaryIsNotADelimiter(): void
     {
@@ -177,6 +187,7 @@ final class MessageParserTest extends TestCase
      * the end of the multipart rather than being discarded, and the defect is
      * RECORDED so a caller can tell a recovered message from an intact one.
      */
+    #[Conformance('rfc2046-unterminated')]
     #[Test]
     public function anUnterminatedMultipartKeepsItsLastPartAndSaysItWasUnterminated(): void
     {
@@ -294,6 +305,7 @@ final class MessageParserTest extends TestCase
         self::assertSame(0, $parts[0]->encodedSizeBytes(), 'and its body range is empty rather than inverted');
     }
 
+    #[Conformance('rfc2045-unknown-encoding')]
     #[Test]
     public function anUnknownTransferEncodingIsPassedThroughAndRecorded(): void
     {
@@ -312,6 +324,8 @@ final class MessageParserTest extends TestCase
 
     // -- transfer encodings ---------------------------------------------------
 
+    #[Conformance('rfc2045-base64')]
+    #[Conformance('size-without-decoding')]
     #[Test]
     public function base64IsDecodedByStreamAndItsSizeIsKnownWithoutDecoding(): void
     {
@@ -332,6 +346,8 @@ final class MessageParserTest extends TestCase
         self::assertGreaterThan(0, $part->sizeBytes());
     }
 
+    #[Conformance('rfc2045-quoted-printable')]
+    #[Conformance('size-without-decoding')]
     #[Test]
     public function quotedPrintableIsDecodedAndItsDecodedSizeIsNotGuessedAt(): void
     {
@@ -347,6 +363,7 @@ final class MessageParserTest extends TestCase
         self::assertNull($message->root->sizeBytes(), 'not computable without scanning, so not answered');
     }
 
+    #[Conformance('streaming-part-body')]
     #[Test]
     public function aPartsStreamCanBeReadIndependentlyOfAnother(): void
     {
@@ -381,6 +398,7 @@ final class MessageParserTest extends TestCase
 
     // -- embedded messages ----------------------------------------------------
 
+    #[Conformance('rfc2046-message-rfc822')]
     #[Test]
     public function anEmbeddedMessageIsParsedAsAMessageAndCountedWholeAsOneAttachment(): void
     {
@@ -423,6 +441,7 @@ final class MessageParserTest extends TestCase
     }
 
     /** RFC 2046: inside a multipart/digest, a part with no Content-Type is message/rfc822. */
+    #[Conformance('rfc2046-digest')]
     #[Test]
     public function insideADigestTheDefaultTypeIsAnEmbeddedMessage(): void
     {

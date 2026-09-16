@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoolMS\Mime\Tests\Unit\Header;
 
 use CoolMS\Mime\Header\EncodedWordDecoder;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -15,6 +16,8 @@ final class EncodedWordDecoderTest extends TestCase
 {
     private EncodedWordDecoder $decoder;
 
+    #[Conformance('rfc2047-base64-word')]
+    #[Conformance('rfc2047-quoted-word')]
     #[Test]
     public function itDecodesBase64AndQuotedPrintableWords(): void
     {
@@ -28,6 +31,7 @@ final class EncodedWordDecoderTest extends TestCase
      * reuses quoted-printable unmodified turns every space in a subject into an
      * underscore.
      */
+    #[Conformance('rfc2047-quoted-word')]
     #[Test]
     public function underscoreIsASpaceInQEncoding(): void
     {
@@ -40,6 +44,7 @@ final class EncodedWordDecoderTest extends TestCase
      * text is. Both appear in one line here, so an implementation that picks either
      * rule globally fails.
      */
+    #[Conformance('rfc2047-adjacency')]
     #[Test]
     public function whitespaceBetweenTwoEncodedWordsIsDroppedAndWhitespaceBesideTextIsKept(): void
     {
@@ -76,6 +81,7 @@ final class EncodedWordDecoderTest extends TestCase
      * bytes the sender meant or to show a mangled guess with nothing marking it as
      * one.
      */
+    #[Conformance('rfc2047-malformed-word')]
     #[Test]
     public function aMalformedWordIsLeftLiteral(): void
     {
@@ -92,6 +98,7 @@ final class EncodedWordDecoderTest extends TestCase
     }
 
     /** RFC 2231 section 5 allows a language tag on the charset; it is not part of the charset name. */
+    #[Conformance('rfc2231-charset-language-in-word')]
     #[Test]
     public function aLanguageSuffixOnTheCharsetIsIgnoredRatherThanBreakingTheWord(): void
     {

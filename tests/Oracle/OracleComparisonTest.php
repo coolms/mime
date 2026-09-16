@@ -9,6 +9,7 @@ use CoolMS\Mime\MessageParser;
 use CoolMS\Mime\Part;
 use CoolMS\Mime\Tests\Corpus\Corpus;
 use CoolMS\Mime\Tests\Corpus\CorpusMessage;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -61,6 +62,15 @@ final class OracleComparisonTest extends TestCase
         }
     }
 
+    #[Conformance('rfc2231-continuation', 'oracle')]
+    #[Conformance('rfc2231-out-of-order', 'oracle')]
+    #[Conformance('rfc2231-extended-value', 'oracle')]
+    #[Conformance('rfc2047-in-parameters', 'oracle')]
+    #[Conformance('rfc2045-base64', 'oracle')]
+    #[Conformance('rfc2045-quoted-printable', 'oracle')]
+    #[Conformance('rfc2046-nested-multipart', 'oracle')]
+    #[Conformance('rfc2046-message-rfc822', 'oracle')]
+    #[Conformance('line-endings', 'oracle')]
     #[Test]
     #[DataProvider('corpus')]
     public function everyDivergenceFromTheOracleIsAdjudicated(CorpusMessage $case): void

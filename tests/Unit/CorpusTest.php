@@ -7,6 +7,7 @@ namespace CoolMS\Mime\Tests\Unit;
 use CoolMS\Mime\MessageParser;
 use CoolMS\Mime\Tests\Corpus\Corpus;
 use CoolMS\Mime\Tests\Corpus\CorpusMessage;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -38,6 +39,9 @@ final class CorpusTest extends TestCase
         }
     }
 
+    #[Conformance('line-endings', 'corpus')]
+    #[Conformance('rfc2046-nested-multipart', 'corpus')]
+    #[Conformance('rfc6532-message-global', 'corpus')]
     #[Test]
     #[DataProvider('corpus')]
     public function everyCorpusMessageParsesIntoAtLeastOnePart(CorpusMessage $case): void
@@ -53,6 +57,9 @@ final class CorpusTest extends TestCase
      * directions. A parser that reported `unterminated-multipart` for everything
      * would satisfy the first half and fail the second.
      */
+    #[Conformance('rfc2046-unterminated', 'corpus')]
+    #[Conformance('rfc2045-unknown-encoding', 'corpus')]
+    #[Conformance('rfc5322-malformed-lines', 'corpus')]
     #[Test]
     #[DataProvider('corpus')]
     public function aCorpusMessageProducesExactlyTheDefectsItClaims(CorpusMessage $case): void

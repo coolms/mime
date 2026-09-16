@@ -36,8 +36,16 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "oracle": "phpunit --testsuite oracle"
+        "test": "phpunit --testsuite mime",
+        "oracle": "phpunit --testsuite oracle",
+        "matrix": [
+            "phpunit --testsuite mime --log-junit build/junit-mime.xml",
+            "phpunit --testsuite oracle --log-junit build/junit-oracle.xml",
+            "php tools/build-matrix.php build/junit-mime.xml build/junit-oracle.xml"
+        ]
+    },
+    "scripts-descriptions": {
+        "matrix": "Regenerate CONFORMANCE.md from the test run; refuses when an implemented row has no passing test."
     },
     "minimum-stability": "stable"
 }

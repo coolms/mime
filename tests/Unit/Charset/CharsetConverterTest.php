@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoolMS\Mime\Tests\Unit\Charset;
 
 use CoolMS\Mime\Charset\CharsetConverter;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +17,7 @@ final class CharsetConverterTest extends TestCase
 {
     private CharsetConverter $converter;
 
+    #[Conformance('charset-conversion')]
     #[Test]
     public function aDeclaredCharsetIsUsedAndNotReportedAsAFallback(): void
     {
@@ -41,6 +43,7 @@ final class CharsetConverterTest extends TestCase
      * in fact UTF-8. Answering correctly is easy; the point of the assertion is that
      * the result SAYS it was a fallback, because the message never promised this.
      */
+    #[Conformance('charset-fallback-reported')]
     #[Test]
     public function undeclaredUtf8IsDetectedAndTheGuessIsAdmitted(): void
     {
@@ -57,6 +60,7 @@ final class CharsetConverterTest extends TestCase
      * "succeeds" -- which is exactly why the result must not look like a clean
      * conversion.
      */
+    #[Conformance('charset-fallback-reported')]
     #[Test]
     public function bytesThatAreNeitherDeclaredNorValidUtf8FallBackAndSaySo(): void
     {
