@@ -1,0 +1,43 @@
+{
+    "name": "coolms/mime",
+    "description": "A streaming MIME parser for PHP: RFC 5322 / 2045-2049 / 2047 / 2231 / 2183 / 6532, including message/rfc822 and message/global. No dependencies, no ext-mailparse.",
+    "type": "library",
+    "keywords": ["mime", "email", "rfc5322", "rfc2045", "parser", "streaming"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dmitry Popov",
+            "email": "d.popov@altgraphic.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/coolms/mime/issues",
+        "source": "https://github.com/coolms/mime"
+    },
+    "require": {
+        "php": "^8.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.5",
+        "zbateson/mail-mime-parser": "^4.0"
+    },
+    "suggest": {
+        "ext-iconv": "Widens the set of declared charsets that can be converted to UTF-8",
+        "ext-mbstring": "Same, and used first where both are present"
+    },
+    "autoload": {
+        "psr-4": {
+            "CoolMS\\Mime\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CoolMS\\Mime\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "oracle": "phpunit --testsuite oracle"
+    },
+    "minimum-stability": "stable"
+}
