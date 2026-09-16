@@ -39,13 +39,21 @@ final class LineReader
 
     private ?string $text = null;
 
+    private ?int $limit;
+
     /**
      * @param resource $stream
+     * @param int|null $limit  one past the last byte this reader may see, or null for
+     *                         the whole stream. A part is parsed from a RANGE its
+     *                         parent already found, and a reader that ran past the
+     *                         end of that range would read the next sibling's
+     *                         boundary line as if it were this part's content.
      */
-    public function __construct($stream, int $offset)
+    public function __construct($stream, int $offset, ?int $limit = null)
     {
         $this->stream = $stream;
         $this->offset = $offset;
+        $this->limit = $limit;
     }
 
     /**
@@ -54,6 +62,10 @@ final class LineReader
      */
     public function next(): bool
     {
+        if (null !== $this->limit && $this->offset >= $this->limit) {
+            return false;
+        }
+
         fseek($this->stream, $this->offset);
         $raw = fgets($this->stream);
         if (false === $raw || '' === $raw) {
