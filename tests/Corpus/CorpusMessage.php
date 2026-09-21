@@ -15,7 +15,7 @@ namespace CoolMS\Mime\Tests\Corpus;
 final readonly class CorpusMessage
 {
     /**
-     * @param list<string> $constructs stable slugs -- what this message exercises
+     * @param list<string> $constructs    stable slugs -- what this message exercises
      * @param list<string> $expectDefects defect slugs our parser must report for it
      */
     public function __construct(

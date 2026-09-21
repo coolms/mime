@@ -8,7 +8,6 @@ use CoolMS\Mime\Header\ParameterDecoder;
 use CoolMS\Mime\Header\ParameterScanner;
 
 use function explode;
-use function str_starts_with;
 use function strtolower;
 use function trim;
 
@@ -46,7 +45,10 @@ final readonly class ContentType
         $decoder ??= new ParameterDecoder();
 
         $scanned = $scanner->scan($header);
-        $parts = explode('/', strtolower(trim($scanned['value'])), 2);
+        $parts = $scanned['value']
+                |> trim(...)
+                |> strtolower(...)
+                |> (fn ($x) => explode('/', $x, 2));
 
         $type = trim($parts[0]);
         $subtype = trim($parts[1] ?? '');

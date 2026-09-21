@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CoolMS\Mime\Tests\Unit\Header;
 
-use CoolMS\Mime\Header\HeaderScanResult;
 use CoolMS\Mime\Header\HeaderScanner;
+use CoolMS\Mime\Header\HeaderScanResult;
 use CoolMS\Mime\Io\Source;
 use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\Test;

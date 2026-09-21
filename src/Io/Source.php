@@ -109,7 +109,7 @@ final class Source
      *
      * Used for the short things -- a header block, a small text part -- where the
      * cost of a copy is trivial and a stream is ceremony. Attachment bodies go
-     * through {@see \CoolMS\Mime\Io\RangeStream} instead.
+     * through {@see RangeStream} instead.
      */
     public function readRange(int $start, int $length): string
     {

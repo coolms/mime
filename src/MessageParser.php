@@ -68,7 +68,7 @@ final readonly class MessageParser
             ? ContentDisposition::parse($scan->headers->value('content-disposition'), $this->parameters, $this->decoder)
             : ContentDisposition::absent();
 
-        $encoding = strtolower(trim($scan->headers->value('content-transfer-encoding', '7bit')));
+        $encoding = $scan->headers->value('content-transfer-encoding', '7bit') |> trim(...) |> strtolower(...);
         $known = ['7bit', '8bit', 'binary', 'base64', 'quoted-printable', ''];
 
         // A header block that ran to the end of this part's range leaves no body.

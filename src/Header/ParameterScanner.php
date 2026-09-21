@@ -54,8 +54,8 @@ final readonly class ParameterScanner
                 continue;
             }
 
-            $name = trim(substr($segment, 0, $equals));
-            $raw = trim(substr($segment, $equals + 1));
+            $name = substr($segment, 0, $equals) |> trim(...);
+            $raw = substr($segment, $equals + 1) |> trim(...);
             $quoted = '' !== $raw && '"' === $raw[0];
 
             $parameters[] = [

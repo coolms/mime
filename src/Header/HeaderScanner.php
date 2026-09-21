@@ -86,8 +86,8 @@ final readonly class HeaderScanner
             }
 
             $colon = strpos($line, ':');
-            $name = rtrim(substr($line, 0, $colon));
-            $value = ltrim(substr($line, $colon + 1));
+            $name = substr($line, 0, $colon) |> rtrim(...);
+            $value = substr($line, $colon + 1) |> ltrim(...);
             $bodyStart = $reader->offset();
         }
 

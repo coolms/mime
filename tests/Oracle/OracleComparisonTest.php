@@ -7,9 +7,9 @@ namespace CoolMS\Mime\Tests\Oracle;
 use CoolMS\Mime\Message;
 use CoolMS\Mime\MessageParser;
 use CoolMS\Mime\Part;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use CoolMS\Mime\Tests\Corpus\Corpus;
 use CoolMS\Mime\Tests\Corpus\CorpusMessage;
-use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -28,8 +28,8 @@ use function ksort;
 use function mkdir;
 use function printf;
 use function rewind;
-use function sprintf;
 use function sort;
+use function sprintf;
 
 /**
  * The differential oracle: every corpus message through this parser and through
@@ -60,6 +60,37 @@ final class OracleComparisonTest extends TestCase
         foreach (Corpus::all() as $message) {
             yield $message->name => [$message];
         }
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        if ([] === self::$report) {
+            return;
+        }
+
+        $report = self::$report;
+        ksort($report);
+
+        $lines = ['# Oracle divergence report', '', 'Grouped by construct. No message content appears here, by design.', ''];
+        foreach ($report as $construct => $divergences) {
+            $unique = array_values(array_unique($divergences));
+            sort($unique);
+            $lines[] = sprintf('## %s', $construct);
+            foreach ($unique as $divergence) {
+                $entry = Adjudications::find($construct, $divergence);
+                $lines[] = sprintf(
+                    '- **%s** -- %s (%s): %s',
+                    $divergence,
+                    $entry['verdict'] ?? 'UNADJUDICATED',
+                    $entry['clause'] ?? '-',
+                    $entry['why'] ?? 'no reasoning recorded',
+                );
+            }
+            $lines[] = '';
+        }
+
+        @mkdir(__DIR__ . '/../../build', 0o775, true);
+        @file_put_contents(__DIR__ . '/../../build/oracle-report.md', implode("\n", $lines) . "\n");
     }
 
     #[Conformance('rfc2231-continuation', 'oracle')]
@@ -183,43 +214,12 @@ final class OracleComparisonTest extends TestCase
         // The assertion is that nobody can add one without it being printed.
         self::assertIsArray($owed);
         if ([] !== $owed) {
-            print "\nOracle: divergences where the oracle is right and this parser is not:\n";
+            echo "\nOracle: divergences where the oracle is right and this parser is not:\n";
             foreach ($owed as $key) {
                 $entry = Adjudications::all()[$key];
                 printf("  %-48s %s -- %s\n", $key, $entry['clause'], $entry['why']);
             }
         }
-    }
-
-    public static function tearDownAfterClass(): void
-    {
-        if ([] === self::$report) {
-            return;
-        }
-
-        $report = self::$report;
-        ksort($report);
-
-        $lines = ['# Oracle divergence report', '', 'Grouped by construct. No message content appears here, by design.', ''];
-        foreach ($report as $construct => $divergences) {
-            $unique = array_values(array_unique($divergences));
-            sort($unique);
-            $lines[] = sprintf('## %s', $construct);
-            foreach ($unique as $divergence) {
-                $entry = Adjudications::find($construct, $divergence);
-                $lines[] = sprintf(
-                    '- **%s** -- %s (%s): %s',
-                    $divergence,
-                    $entry['verdict'] ?? 'UNADJUDICATED',
-                    $entry['clause'] ?? '-',
-                    $entry['why'] ?? 'no reasoning recorded',
-                );
-            }
-            $lines[] = '';
-        }
-
-        @mkdir(__DIR__ . '/../../build', 0o775, true);
-        @file_put_contents(__DIR__ . '/../../build/oracle-report.md', implode("\n", $lines) . "\n");
     }
 
     protected function setUp(): void

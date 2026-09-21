@@ -16,7 +16,6 @@ use function fclose;
 use function preg_match_all;
 use function stream_filter_append;
 use function stream_get_contents;
-use function strtolower;
 use function substr_count;
 use function trim;
 
@@ -53,7 +52,7 @@ final class Part
         public readonly int $bodyEnd,
         /** Lowercased `Content-Transfer-Encoding`, defaulting to `7bit` per RFC 2045. */
         public readonly string $transferEncoding = '7bit',
-        /** Children, for a multipart or an embedded message. */
+        /* Children, for a multipart or an embedded message. */
         array $parts = [],
         /** What was structurally wrong with this part, if anything. */
         public readonly PartDefects $defects = new PartDefects(),

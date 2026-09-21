@@ -109,7 +109,7 @@ final class EncodedWordDecoderTest extends TestCase
     public function aNonUtf8CharsetIsConvertedToUtf8(): void
     {
         // "Grüße" in ISO-8859-1.
-        self::assertSame('Grüße', $this->decoder->decode("=?iso-8859-1?Q?Gr=FC=DFe?="));
+        self::assertSame('Grüße', $this->decoder->decode('=?iso-8859-1?Q?Gr=FC=DFe?='));
     }
 
     #[Test]

@@ -10,3 +10,6 @@
 # composer.lock is deliberately NOT committed: this is a LIBRARY, so the lock
 # would only pin the dev toolchain and would fight every consumer's own
 # resolution. Applications commit theirs; libraries do not.
+
+# PHP CS Fixer configuration
+/.php-cs-fixer.php

@@ -88,30 +88,6 @@ final readonly class Message
     }
 
     /**
-     * An embedded message IS an attachment, and the parts inside it are ITS
-     * attachments rather than this message's -- so it is taken whole and the walk
-     * stops there. Descending would report a forwarded message's three images as
-     * though somebody had attached them to this one.
-     *
-     * @return list<Part>
-     */
-    private function collectAttachments(Part $part): array
-    {
-        if ($part->isEmbeddedMessage()) {
-            return [$part];
-        }
-
-        $found = $part->isAttachment() ? [$part] : [];
-        foreach ($part->parts() as $child) {
-            foreach ($this->collectAttachments($child) as $descendant) {
-                $found[] = $descendant;
-            }
-        }
-
-        return $found;
-    }
-
-    /**
      * The message's text bodies of one subtype, in order.
      *
      * @return list<Part>
@@ -143,6 +119,30 @@ final readonly class Message
         }
 
         return array_keys($names);
+    }
+
+    /**
+     * An embedded message IS an attachment, and the parts inside it are ITS
+     * attachments rather than this message's -- so it is taken whole and the walk
+     * stops there. Descending would report a forwarded message's three images as
+     * though somebody had attached them to this one.
+     *
+     * @return list<Part>
+     */
+    private function collectAttachments(Part $part): array
+    {
+        if ($part->isEmbeddedMessage()) {
+            return [$part];
+        }
+
+        $found = $part->isAttachment() ? [$part] : [];
+        foreach ($part->parts() as $child) {
+            foreach ($this->collectAttachments($child) as $descendant) {
+                $found[] = $descendant;
+            }
+        }
+
+        return $found;
     }
 
     /**

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace CoolMS\Mime\Tests\Unit;
 
 use CoolMS\Mime\Tests\Conformance\ClaimedRows;
-use CoolMS\Mime\Tests\Conformance\ConformanceMatrix;
 use CoolMS\Mime\Tests\Conformance\Conformance;
+use CoolMS\Mime\Tests\Conformance\ConformanceMatrix;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

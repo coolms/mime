@@ -32,13 +32,9 @@ final class LineReader
     private $stream;
 
     private int $offset;
-
     private int $lineStart = 0;
-
     private int $terminatorLength = 0;
-
     private ?string $text = null;
-
     private ?int $limit;
 
     /**

@@ -47,7 +47,7 @@ final readonly class ContentDisposition
 
         $scanned = $scanner->scan($header);
 
-        return new self(strtolower(trim($scanned['value'])), $decoder->decode($scanned['parameters']));
+        return new self(trim($scanned['value']) |> strtolower(...), $decoder->decode($scanned['parameters']));
     }
 
     public static function absent(): self

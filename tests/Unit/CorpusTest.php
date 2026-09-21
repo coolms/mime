@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace CoolMS\Mime\Tests\Unit;
 
 use CoolMS\Mime\MessageParser;
+use CoolMS\Mime\Tests\Conformance\Conformance;
 use CoolMS\Mime\Tests\Corpus\Corpus;
 use CoolMS\Mime\Tests\Corpus\CorpusMessage;
-use CoolMS\Mime\Tests\Conformance\Conformance;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

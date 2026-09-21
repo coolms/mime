@@ -11,12 +11,12 @@ use function fread;
 use function fseek;
 use function is_array;
 use function is_resource;
-use function strlen;
 use function max;
 use function min;
 use function stream_context_create;
 use function stream_context_get_options;
 use function stream_wrapper_register;
+use function strlen;
 
 use const SEEK_CUR;
 use const SEEK_END;
@@ -44,18 +44,16 @@ final class RangeStreamWrapper
 {
     public const string PROTOCOL = 'coolms-mime-range';
 
-    private static bool $registered = false;
-
     /** @var resource|null set by PHP when the stream is opened */
     public $context;
+
+    private static bool $registered = false;
 
     /** @var resource */
     private $source;
 
     private int $start = 0;
-
     private int $end = 0;
-
     private int $position = 0;
 
     /**
