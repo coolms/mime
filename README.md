@@ -34,15 +34,13 @@ PHP 8.5 or later.
 
 ## Installation
 
-```bash
-composer require coolms/mime
-```
-
-There is no tagged release yet. Until there is, require the development branch:
+There is no tagged release yet, so require the development branch:
 
 ```bash
 composer require coolms/mime:dev-main
 ```
+
+Once a release is tagged, `composer require coolms/mime` installs it.
 
 ## Usage
 
