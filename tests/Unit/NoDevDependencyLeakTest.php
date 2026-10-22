@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
 
 use function file_get_contents;
 use function json_decode;
@@ -37,8 +38,8 @@ final class NoDevDependencyLeakTest extends TestCase
         $offenders = [];
         $root = __DIR__ . '/../../src';
 
-        /** @var RecursiveDirectoryIterator $files */
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root));
+        /** @var SplFileInfo $file */
         foreach ($files as $file) {
             if (!$file->isFile() || 'php' !== $file->getExtension()) {
                 continue;
