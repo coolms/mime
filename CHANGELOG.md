@@ -6,7 +6,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 There is no tagged release yet, so everything the package does today is listed
 under Unreleased.
 
-## Unreleased
+## 1.0.0-alpha1 - 2026-10-22
+
+**First published release.** Nothing before this was ever released, so there
+is no earlier history to describe.
+
+**A pre-release. It carries no compatibility promise**: the shape may still
+move, and a stable tag would be a promise that cannot be kept yet. Composer
+will not install it under default stability; set `"minimum-stability": "alpha"`
+and `"prefer-stable": true` in your root `composer.json`, then
+`composer require coolms/mime`.
 
 ### Added
 - `MessageParser::parse()`, which reads a message from a string or a stream
